@@ -106,7 +106,7 @@ where what is:
             });
             if (secretBuffer2) {
                 try {
-                    const inflated = zlib.gunzipSync(Buffer.from(secretBuffer1, 'base64'));
+                    const inflated = zlib.gunzipSync(Buffer.from(secretBuffer2, 'base64'));
                     try {
                         helmGetAllJSON2 = JSON.parse(inflated.toString('utf8'));
                     } catch (e) {
