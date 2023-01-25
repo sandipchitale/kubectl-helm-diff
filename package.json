@@ -1,7 +1,7 @@
 {
   "name": "kubectl-helm_diff",
-  "version": "0.0.3",
-  "description": "Kubectl plugin to run helm commands including custom commands like get templates RELEASENAME [--revision N]",
+  "version": "0.0.1",
+  "description": "Kubectl plugin to run helm diff command.",
   "license": "SEE LICENSE IN LICENCE",
   "main": "out/main.js",
   "bin": "out/main.js",
@@ -26,7 +26,7 @@
     "kubectl",
     "plugin",
     "helm",
-    "get templates RELEASENAME [--revision N]"
+    "diff WHAT [--code] --release1 RELEASE1 --revision1 R1 [--namespace1 NAMESPACE1] --release2 RELEASE2 --revision2 R2 [--namespace2 NAMESPACE2]"
   ],
   "devDependencies": {
     "@tsconfig/node18": "^1.0.1",

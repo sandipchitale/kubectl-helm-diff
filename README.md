@@ -1,12 +1,18 @@
 # Kubectl plugin - helm
 
-This ```kubectl``` supports the following custom ```helm``` commands.
+This ```kubectl``` supports the following custom ```helm``` command.
 
 ## Custom helm commands
 
 ```
-kubectl helm get templates RELEASENAME [--revision n] [--namespace NAMESPACENAME]
+kubectl helm-diff WHAT [--code] --release1 RELEASE1 --revision1 R1 [--namespace1 NAMESPACE1] --release2 RELEASE2 --revision2 R2 [--namespace2 NAMESPACE2]
 ```
+
+where WHAT is:
+
+comma separated (no space before or after commas) set of some of these options all, hooks, manifest, notes, values, templates
+
+--code option specifies to use VSCode to show the diff
 
 ## Building
 
