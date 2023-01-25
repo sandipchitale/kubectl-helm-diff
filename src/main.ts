@@ -13,12 +13,13 @@ import * as diff from 'diff';
     const diffUsage = `
 The Kubernetes package manager custome commands:
 
-diff what --release1 RELEASE1 --revision1 R1 [--namespace1 NAMESPACE1] --release2 RELEASE2 --revision2 R2 [--namespace2 NAMESPACE2]
+diff WHAT [--code] --release1 RELEASE1 --revision1 R1 [--namespace1 NAMESPACE1] --release2 RELEASE2 --revision2 R2 [--namespace2 NAMESPACE2]
 
+where WHAT is:
 
-where what is:
+comma separated (no space before or after commas) set of some of these options all, hooks, manifest, notes, values, templates
 
-    comma separated set of some of all, hooks, manifest, notes, values, templates
+--code option specifies to use VSCode to show the diff
 `;
 
     let rest = process.argv.slice(2);
@@ -151,15 +152,17 @@ where what is:
                         templates2 = `# Templates for release2: ${release2} revision2: ${revision2} ${namespace2 ? ` in namespace2 ${namespace2}` : ' in current namespace'}\n${templates2}`;
 
                         if (code) {
-                            const filePathA = path.join(os.tmpdir(), `L-diff-${diffWhat}-${namespace1 ? `${namespace1}-` : ''}${release1}-${revision1}.txt`);
-                            const filePathB = path.join(os.tmpdir(), `R-diff-${diffWhat}-${namespace2 ? `${namespace2}-` : ''}${release2}-${revision2}.txt`);
-                            fs.writeFileSync(filePathA, templates1);
-                            fs.writeFileSync(filePathB, templates2);
-                            child_process.execSync(`code --diff ${filePathA} ${filePathB}`, {
-                                encoding: 'utf8'
-                            });
+                            codeDiff(
+                                path.join(os.tmpdir(), `L-diff-${diffWhat}-${namespace1 ? `${namespace1}-` : ''}${release1}-${revision1}.txt`),
+                                templates1,
+                                path.join(os.tmpdir(), `R-diff-${diffWhat}-${namespace2 ? `${namespace2}-` : ''}${release2}-${revision2}.txt`),
+                                templates2
+                            );
                         } else {
-                            const templatesDiffs = diff.createTwoFilesPatch('Release 1', 'Release 1', templates1, templates2, `1`, `2`);
+                            console.info(diff.createTwoFilesPatch('L', 'R',
+                                templates1, templates2,
+                                `diff-${diffWhat}-${namespace1 ? `${namespace1}-` : ''}${release1}-${revision1}.txt`,
+                                `diff-${diffWhat}-${namespace2 ? `${namespace2}-` : ''}${release2}-${revision2}.txt`));
                         }
                         break;
                     }
@@ -168,6 +171,14 @@ where what is:
         } catch (e) {
             console.error(e);
             return;
+        }
+
+        function codeDiff(filePathL: string, contentL: string, filePathR: string, contentR: string) {
+            fs.writeFileSync(filePathL, contentL);
+            fs.writeFileSync(filePathR, contentR);
+            child_process.execSync(`code --diff ${filePathL} ${filePathR}`, {
+                encoding: 'utf8'
+            });
         }
     } else {
         console.info(diffUsage);
